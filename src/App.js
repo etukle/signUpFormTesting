@@ -1,7 +1,38 @@
 import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import validator from 'validator';
 
 function App() {
+
+  const [signupInput, setSignupInput] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
+
+  const [error, setError] = useState("")
+
+  const handleChange = (e) => {
+    setSignupInput({
+      ...signupInput,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if(!validator.isEmail(signupInput.email)){
+      return setError("Please enter a valid email")
+    }else if(signupInput.password.length < 5){
+      return setError("The password you entered should contain 5 or more characters")
+    }else if(signupInput.password !== signupInput.confirmPassword){
+      return setError("The password you entered should be same please try again")
+    }else{
+      setError("")
+    }
+  }
+
   return (
     <div className='container my-5'>
       <form>
@@ -13,7 +44,10 @@ function App() {
           type="email"
           id="email"
           name="email"
-          className="form-control"/>
+          className="form-control"
+          value={signupInput.email}
+          onChange={handleChange}
+          />
         </div>
         <div className='mb-3'>
           <label htmlFor='password' className='form-label'>
@@ -23,7 +57,10 @@ function App() {
           type="password"
           id="password"
           name="password"
-          className="form-control"/>
+          className="form-control"
+          value={signupInput.password}
+          onChange={handleChange}
+          />
         </div>
         <div className='mb-3'>
           <label htmlFor='confirmPassword' className='form-label'>
@@ -33,8 +70,13 @@ function App() {
           type="password"
           id="confirmPassword"
           name="confirmPassword"
-          className="form-control"/>
+          className="form-control"
+          value={signupInput.confirmPassword}
+          onChange={handleChange}
+          />
         </div>
+        {error && <p className='text-danger'>{error}</p>}
+        <button type="submit" className='btn btn-primary' onClick={handleSubmit}>Submit</button>
       </form>
     </div>
   );
